@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser
 
 # User Model: The base for everyone
 class CustomUser(AbstractUser):
-    mobile_number = models.CharField(max_length=15, unique=True, blank=False, null=False)
+    mobile_number = models.CharField(max_length=10, unique=True, blank=False, null=False)
+
     age = models.PositiveIntegerField(null=True, blank=True)
     profile_avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png')
     liked_songs = models.ManyToManyField('Song', related_name='liked_by_users', blank=True)
