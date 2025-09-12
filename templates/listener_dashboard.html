@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>🎧 Listener Dashboard</h1>
+<p>Welcome {{ user.username }}! Enjoy browsing and playing music.</p>
+<a href="{% url 'home' %}">Back to Home</a>
+{% endblock %}

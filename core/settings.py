@@ -152,3 +152,4 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 # Use our custom signup form
 ACCOUNT_FORMS = {"signup": "music.forms.CustomSignupForm"}
+LOGIN_REDIRECT_URL = "/redirect-after-login/"

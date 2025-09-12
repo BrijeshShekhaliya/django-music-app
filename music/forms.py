@@ -7,32 +7,24 @@ from .models import Song, CustomUser
 class CustomSignupForm(SignupForm):
     mobile_number = forms.CharField(max_length=15, label='Mobile Number', required=True)
     age = forms.IntegerField(label='Age', required=True)
+    role = forms.ChoiceField(choices=CustomUser.ROLE_CHOICES, required=True)
 
     def clean_mobile_number(self):
         mobile = self.cleaned_data.get('mobile_number', '').strip()
         if not mobile:
             raise ValidationError("Mobile number cannot be empty.")
-        # Optionally normalize here (remove spaces, dashes, leading +, etc.)
         if CustomUser.objects.filter(mobile_number=mobile).exists():
             raise ValidationError("This mobile number is already registered.")
         return mobile
 
     def save(self, request):
-        # Let allauth create the base user
         user = super().save(request)
 
-        mobile = self.cleaned_data.get('mobile_number', '').strip()
-        age = self.cleaned_data.get('age')
-
-        # final check to avoid race condition
-        if CustomUser.objects.filter(mobile_number=mobile).exclude(pk=user.pk).exists():
-            raise ValidationError("This mobile number is already registered.")
-
-        user.mobile_number = mobile
-        user.age = age
+        user.mobile_number = self.cleaned_data["mobile_number"].strip()
+        user.age = self.cleaned_data["age"]
+        user.role = self.cleaned_data["role"]
         user.save()
         return user
-
 
 class SongForm(forms.ModelForm):
     class Meta:

@@ -11,18 +11,7 @@ from .recommender import get_recommendations_for_user
 from django.db.models import Q 
 
 def home(request):
-    approved_songs = Song.objects.filter(is_approved=True)
-    
-    recommendations = []
-    # Check if the user is logged in to get recommendations
-    if request.user.is_authenticated:
-        recommendations = get_recommendations_for_user(request.user)
-
-    context = {
-        'songs': approved_songs,
-        'recommendations': recommendations,
-    }
-    return render(request, 'home.html', context)
+    return render(request, "music/home.html")
 
 @login_required
 def upload_song(request):
@@ -102,3 +91,20 @@ def like_song(request, song_id):
         request.user.liked_songs.add(song)
         liked = True
     return JsonResponse({'liked': liked})
+
+@login_required
+def listener_dashboard(request):
+    if request.user.role != "listener":
+        return redirect("creator_dashboard")
+    return render(request, "music/listener_dashboard.html")
+
+@login_required
+def creator_dashboard(request):
+    if request.user.role != "creator":
+        return redirect("listener_dashboard")
+    return render(request, "music/creator_dashboard.html")
+
+def redirect_after_login(request):
+    if request.user.role == "creator":
+        return redirect("creator_dashboard")
+    return redirect("listener_dashboard")
