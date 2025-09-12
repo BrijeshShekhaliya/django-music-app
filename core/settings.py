@@ -6,6 +6,8 @@ SECRET_KEY = 'django-insecure-your-new-secret-key-goes-here'
 DEBUG = True
 ALLOWED_HOSTS = []
 
+# core/settings.py
+
 INSTALLED_APPS = [
     'music.apps.MusicConfig',
     'allauth',
@@ -13,12 +15,16 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'cloudinary_storage',
     'cloudinary',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Add this required app for allauth
+    'django.contrib.sites',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
