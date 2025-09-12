@@ -70,16 +70,9 @@ def log_song_play(request, song_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'}, status=400)
 
 def search_results(request):
-    query = request.GET.get('q')
-    results = []
-    if query:
-        results = Song.objects.filter(
-            Q(name__icontains=query) | Q(author_name__icontains=query),
-            is_approved=True
-        ).distinct()
-
-    context = { 'query': query, 'results': results }
-    return render(request, 'search_results.html', context)
+    query = request.GET.get('q', '')
+    songs = Song.objects.filter(title__icontains=query) if query else []
+    return render(request, "music/search_results.html", {"songs": songs})
 
 @login_required
 def like_song(request, song_id):
