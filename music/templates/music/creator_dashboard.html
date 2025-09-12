@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Creator Dashboard</h1>
+<p>Welcome, {{ user.username }}! You are logged in as a creator.</p>
+<a href="{% url 'upload_song' %}">Upload a Song</a> |
+<a href="{% url 'home' %}">Home</a> |
+<a href="{% url 'account_logout' %}">Logout</a>
+{% endblock %}

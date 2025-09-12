@@ -19,13 +19,12 @@ class CustomSignupForm(SignupForm):
 
     def save(self, request):
         user = super().save(request)
-
         user.mobile_number = self.cleaned_data["mobile_number"].strip()
         user.age = self.cleaned_data["age"]
         user.role = self.cleaned_data["role"]
         user.save()
         return user
-
+    
 class SongForm(forms.ModelForm):
     class Meta:
         model = Song

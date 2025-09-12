@@ -1,7 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-<h1>🎤 Creator Dashboard</h1>
-<p>Welcome {{ user.username }}! Upload and manage your songs.</p>
-<a href="{% url 'upload_song' %}">Upload a new Song</a>
-<a href="{% url 'home' %}">Back to Home</a>
-{% endblock %}

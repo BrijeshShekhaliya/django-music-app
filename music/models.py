@@ -20,6 +20,7 @@ class CustomUser(AbstractUser):
     def is_listener(self):
         return self.role == "listener"
 
+
 # Creator Profile: Linked to a User, with specific fields
 class Creator(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

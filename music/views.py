@@ -94,17 +94,19 @@ def like_song(request, song_id):
 
 @login_required
 def listener_dashboard(request):
-    if request.user.role != "listener":
+    if not request.user.role == "listener":
         return redirect("creator_dashboard")
     return render(request, "music/listener_dashboard.html")
 
 @login_required
 def creator_dashboard(request):
-    if request.user.role != "creator":
+    if not request.user.role == "creator":
         return redirect("listener_dashboard")
     return render(request, "music/creator_dashboard.html")
 
+@login_required
 def redirect_after_login(request):
     if request.user.role == "creator":
         return redirect("creator_dashboard")
-    return redirect("listener_dashboard")
+    else:
+        return redirect("listener_dashboard")

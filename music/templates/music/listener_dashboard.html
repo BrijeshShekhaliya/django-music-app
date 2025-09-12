@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Listener Dashboard</h1>
+<p>Welcome, {{ user.username }}! You are logged in as a listener.</p>
+<a href="{% url 'home' %}">Home</a> |
+<a href="{% url 'account_logout' %}">Logout</a>
+{% endblock %}

@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Django Music</title>
+    <meta charset="UTF-8">
+    <title>Django Music App</title>
 </head>
 <body>
-    {% if messages %}
-        <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
+    {% if user.is_authenticated %}
+        <p>Logged in as {{ user.username }} ({{ user.role }})</p>
     {% endif %}
-
     {% block content %}{% endblock %}
 </body>
 </html>

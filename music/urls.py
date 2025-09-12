@@ -1,3 +1,5 @@
+# music/urls.py
+
 from django.urls import path
 from . import views
 
@@ -9,7 +11,7 @@ urlpatterns = [
     path('search/', views.search_results, name='search_results'),
     path('like_song/<int:song_id>/', views.like_song, name='like_song'),
 
-    # New dashboards
+    # New
     path('dashboard/listener/', views.listener_dashboard, name='listener_dashboard'),
     path('dashboard/creator/', views.creator_dashboard, name='creator_dashboard'),
     path('redirect-after-login/', views.redirect_after_login, name='redirect_after_login'),
