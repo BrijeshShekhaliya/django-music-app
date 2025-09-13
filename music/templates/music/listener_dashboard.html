@@ -1,9 +1,15 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
 {% block content %}
-<h2>Listener Dashboard</h2>
-<p>Welcome, {{ user.username }}!</p>
+<h1>Listener Dashboard</h1>
+<p>Hello, {{ user.username }} (Role: Listener)</p>
+
+<h2>Available Songs</h2>
 <ul>
-    <li><a href="{% url 'home' %}">Home</a></li>
-    <li><a href="{% url 'search_results' %}">Search Songs</a></li>
+    {% for song in songs %}
+        <li>{{ song.title }} by {{ song.uploaded_by.user.username }}</li>
+    {% empty %}
+        <li>No songs available.</li>
+    {% endfor %}
 </ul>
 {% endblock %}

@@ -1,17 +1,36 @@
-# music/views.py (Corrected and Cleaned)
-
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse 
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from .models import Song, Creator, CustomUser, SongHistory
+from .models import Song, Creator, SongHistory
 from .forms import SongForm, UserUpdateForm
 from mutagen.mp3 import MP3
 from django.contrib import messages
-from .recommender import get_recommendations_for_user 
-from django.db.models import Q 
+from .recommender import get_recommendations_for_user
+from django.contrib.auth import logout
+from django.views.decorators.cache import never_cache
+from allauth.account.views import ConfirmEmailView
 
+
+@never_cache
 def home(request):
+    if request.user.is_authenticated:
+        if request.user.is_creator:
+            return render(request, "music/creator_dashboard.html")
+        else:
+            return render(request, "music/listener_dashboard.html")
     return render(request, "music/home.html")
+
+
+@login_required
+def redirect_after_login(request):
+    user = request.user
+    if user.is_superuser:
+        return redirect('/admin/')
+    elif user.role == 'creator':
+        return redirect('creator_dashboard')
+    else:
+        return redirect('listener_dashboard')
+
 
 @login_required
 def upload_song(request):
@@ -28,7 +47,7 @@ def upload_song(request):
             try:
                 audio = MP3(audio_file)
                 duration = int(audio.info.length)
-                if duration > 600: # 10 minutes limit
+                if duration > 600:
                     messages.error(request, 'Song duration cannot exceed 10 minutes.')
                     return render(request, 'upload_song.html', {'form': form})
             except Exception as e:
@@ -40,13 +59,12 @@ def upload_song(request):
             song.duration_in_seconds = duration
             song.is_approved = False
             song.save()
-            
             messages.success(request, 'Your song has been uploaded and is pending approval!')
             return redirect('home')
     else:
         form = SongForm()
-    
     return render(request, 'upload_song.html', {'form': form})
+
 
 @login_required
 def profile(request):
@@ -58,21 +76,17 @@ def profile(request):
             return redirect('profile')
     else:
         form = UserUpdateForm(instance=request.user)
-
     return render(request, 'profile.html', {'form': form})
+
 
 @login_required
 def log_song_play(request, song_id):
     if request.method == 'POST':
         song = get_object_or_404(Song, id=song_id)
         SongHistory.objects.create(user=request.user, song=song)
-        return JsonResponse({'status': 'success', 'message': 'Play logged.'})
-    return JsonResponse({'status': 'error', 'message': 'Invalid request.'}, status=400)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
 
-def search_results(request):
-    query = request.GET.get('q', '')
-    songs = Song.objects.filter(title__icontains=query) if query else []
-    return render(request, "music/search_results.html", {"songs": songs})
 
 @login_required
 def like_song(request, song_id):
@@ -85,21 +99,42 @@ def like_song(request, song_id):
         liked = True
     return JsonResponse({'liked': liked})
 
+
 @login_required
 def listener_dashboard(request):
-    if not request.user.role == "listener":
-        return redirect("creator_dashboard")
     return render(request, "music/listener_dashboard.html")
+
 
 @login_required
 def creator_dashboard(request):
-    if not request.user.role == "creator":
-        return redirect("listener_dashboard")
     return render(request, "music/creator_dashboard.html")
 
+
+def search_results(request):
+    query = request.GET.get('q', '')
+    songs = Song.objects.filter(title__icontains=query) if query else []
+    return render(request, "music/search_results.html", {"songs": songs})
+
+
 @login_required
-def redirect_after_login(request):
-    if request.user.role == "creator":
-        return redirect("creator_dashboard")
-    else:
-        return redirect("listener_dashboard")
+def custom_logout(request):
+    logout(request)
+    messages.success(request, "You have been logged out successfully.")
+    return redirect("account_login")
+
+
+# ✅ Custom Email Confirmation
+class CustomConfirmEmailView(ConfirmEmailView):
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        email_address = self.object.email_address
+        email_address.verified = True
+        email_address.save()
+
+        user = email_address.user
+        user.is_active = True
+        user.save()
+
+        # Show success page instead of auto-login
+        messages.success(self.request, "Your email has been confirmed successfully.")
+        return render(self.request, "account/email_confirm_success.html")

@@ -31,17 +31,15 @@ class Creator(models.Model):
 
 # Song Model: The core of the platform
 class Song(models.Model):
-    name = models.CharField(max_length=200)
-    theme_image = models.ImageField(upload_to='song_themes/')
-    author_name = models.CharField(max_length=200)
-    song_file = models.FileField(upload_to='songs/')
-    duration_in_seconds = models.PositiveIntegerField()
-    uploaded_by = models.ForeignKey(Creator, on_delete=models.CASCADE, related_name='songs')
-    is_approved = models.BooleanField(default=False)  # Admin controls this!
+    name = models.CharField(max_length=255)
+    theme_image = models.ImageField(upload_to="songs/images/", blank=True, null=True)
+    author_name = models.CharField(max_length=255)
+    song_file = models.FileField(upload_to="songs/files/")
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ('name', 'author_name')
+    def __str__(self):
+        return self.name
 
     def __str__(self):
         return f'"{self.name}" by {self.author_name}'

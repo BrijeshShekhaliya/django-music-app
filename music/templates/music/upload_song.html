@@ -1,22 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}Upload Song - Music Web{% endblock %}
-
 {% block content %}
-    <h2>Upload Your Song</h2>
-    <p>Your song will be reviewed by an admin before it appears on the site.</p>
-
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
-    </form>
+<h1>Upload Song</h1>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+</form>
 {% endblock %}

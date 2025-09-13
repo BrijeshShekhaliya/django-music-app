@@ -1,8 +1,7 @@
-# music/forms.py
 from django import forms
 from allauth.account.forms import SignupForm
 from django.core.exceptions import ValidationError
-from .models import Song, CustomUser
+from .models import CustomUser, Song
 
 class CustomSignupForm(SignupForm):
     mobile_number = forms.CharField(max_length=15, label='Mobile Number', required=True)
@@ -24,12 +23,11 @@ class CustomSignupForm(SignupForm):
         user.role = self.cleaned_data["role"]
         user.save()
         return user
-    
+
 class SongForm(forms.ModelForm):
     class Meta:
         model = Song
         fields = ['name', 'theme_image', 'author_name', 'song_file']
-
 
 class UserUpdateForm(forms.ModelForm):
     class Meta:
