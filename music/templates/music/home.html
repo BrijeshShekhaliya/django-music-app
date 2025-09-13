@@ -1,6 +1,22 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Welcome to Django Music App</h1>
-<p>Please <a href="{% url 'account_login' %}">login</a> or <a href="{% url 'account_signup' %}">signup</a> to continue.</p>
+<h1>Welcome to DJangoMusic</h1>
+<div class="songs-list">
+    {% for song in songs %}
+    <div class="song-card">
+        <img src="{{ song.theme_image.url }}" alt="{{ song.name }}">
+        <h3>{{ song.name }}</h3>
+        <p>{{ song.author_name }}</p>
+        <audio controls>
+            <source src="{{ song.song_file.url }}" type="audio/mpeg">
+        </audio>
+    </div>
+    {% empty %}
+        <p>No songs available.</p>
+    {% endfor %}
+</div>
 {% endblock %}

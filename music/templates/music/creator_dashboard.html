@@ -1,16 +1,20 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Creator Dashboard{% endblock %}
 
 {% block content %}
 <h1>Creator Dashboard</h1>
-<p>Hello, {{ user.username }} (Role: Creator)</p>
 <a href="{% url 'upload_song' %}">Upload New Song</a>
-
-<h2>Your Songs</h2>
-<ul>
+<div class="songs-list">
     {% for song in songs %}
-        <li>{{ song.title }} - {% if song.is_approved %}Approved{% else %}Pending{% endif %}</li>
+    <div class="song-card">
+        <img src="{{ song.theme_image.url }}" alt="{{ song.name }}">
+        <h3>{{ song.name }}</h3>
+        <p>Status: {{ song.is_approved|yesno:"Approved,Awaiting Approval" }}</p>
+    </div>
     {% empty %}
-        <li>No songs uploaded yet.</li>
+        <p>You haven't uploaded any songs yet.</p>
     {% endfor %}
-</ul>
+</div>
 {% endblock %}

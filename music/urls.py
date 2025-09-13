@@ -4,7 +4,7 @@ from .views import CustomConfirmEmailView
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('upload/', views.upload_song, name='upload_song'),
+    path("upload/", views.upload_song, name="upload_song"),
     path('profile/', views.profile, name='profile'),
     path('log_play/<int:song_id>/', views.log_song_play, name='log_song_play'),
     path('search/', views.search_results, name='search_results'),
